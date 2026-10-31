@@ -8,7 +8,7 @@ REST API для управления жизненным циклом прогр�
 ## Технологии
 
 - Java 25
-- Spring Boot 4.1.1
+- Spring Boot 3.5.5
 - Spring Data JPA (Hibernate)
 - PostgreSQL 16 (в Docker)
 - Maven
