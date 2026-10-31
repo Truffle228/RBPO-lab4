@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: 24077
+  datasource:
+    url: jdbc:postgresql://localhost:5432/lab2db
+    username: lab2user
+    password: lab2pass
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  sql:
+    init:
+      mode: always
+server:
+  port: 8080

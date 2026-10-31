@@ -1,0 +1,475 @@
+{
+  "info": {
+    "name": "RBPO-lab3 - Release Management",
+    "description": "Сценарий работы системы управления выпуском ПО",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "userId1",
+      "value": ""
+    },
+    {
+      "key": "userId2",
+      "value": ""
+    },
+    {
+      "key": "productId",
+      "value": ""
+    },
+    {
+      "key": "taskId",
+      "value": ""
+    },
+    {
+      "key": "releaseId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Пользователи — CRUD",
+      "item": [
+        {
+          "name": "Создать пользователя admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('userId1', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\": \"admin\", \"email\": \"admin@test.com\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Создать пользователя developer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('userId2', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\": \"developer\", \"email\": \"dev@test.com\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Список пользователей",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Обновить пользователя",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"admin@new.com\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId1}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{userId1}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Продукты — CRUD",
+      "item": [
+        {
+          "name": "Создать продукт",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('productId', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"MyApp\", \"responsibleId\": {{userId1}}}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/software-products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "software-products"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Список продуктов",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/software-products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "software-products"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Задачи — CRUD",
+      "item": [
+        {
+          "name": "Создать задачу",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('taskId', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"productId\": {{productId}}, \"assigneeId\": {{userId2}}, \"version\": \"1.0\", \"status\": \"NEW\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/development-tasks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "development-tasks"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Завершить задачу (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"status\": \"DONE\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/development-tasks/{{taskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "development-tasks",
+                "{{taskId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Бизнес-операции",
+      "item": [
+        {
+          "name": "БО-1: Назначить исполнителя (Task + User)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/business/task/assign?taskId={{taskId}}&userId={{userId1}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "business",
+                "task",
+                "assign"
+              ],
+              "query": [
+                {
+                  "key": "taskId",
+                  "value": "{{taskId}}"
+                },
+                {
+                  "key": "userId",
+                  "value": "{{userId1}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "БО-2: Выпустить релиз (Release + ReleaseCheck)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('releaseId', pm.response.json().id);",
+                  "pm.test('status = RELEASED', () => pm.expect(pm.response.json().status).to.eql('RELEASED'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/business/release/publish?productId={{productId}}&version=1.0.0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "business",
+                "release",
+                "publish"
+              ],
+              "query": [
+                {
+                  "key": "productId",
+                  "value": "{{productId}}"
+                },
+                {
+                  "key": "version",
+                  "value": "1.0.0"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "БО-3: Провести все проверки (Release + ReleaseCheck)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('allMandatoryPassed', () => pm.expect(pm.response.json().allMandatoryPassed).to.be.true);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/business/release/check-all?releaseId={{releaseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "business",
+                "release",
+                "check-all"
+              ],
+              "query": [
+                {
+                  "key": "releaseId",
+                  "value": "{{releaseId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "БО-4: Переназначить ответственного (Product + User)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/business/product/reassign?productId={{productId}}&userId={{userId2}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "business",
+                "product",
+                "reassign"
+              ],
+              "query": [
+                {
+                  "key": "productId",
+                  "value": "{{productId}}"
+                },
+                {
+                  "key": "userId",
+                  "value": "{{userId2}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "БО-5: Закрыть продукт (Product + Tasks)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('name starts with [CLOSED]', () => pm.expect(pm.response.json().name).to.include('[CLOSED]'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/business/product/close?productId={{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "business",
+                "product",
+                "close"
+              ],
+              "query": [
+                {
+                  "key": "productId",
+                  "value": "{{productId}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
